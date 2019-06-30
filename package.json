@@ -1,0 +1,15 @@
+{
+  "name": "cdn-maker",
+  "version": "1.0.0",
+  "description": "list image path in folder and transform them to cdn path",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "3c",
+  "license": "ISC",
+  "devDependencies": {
+    "express": "^4.17.1",
+    "get-pixels": "^3.3.2"
+  }
+}
