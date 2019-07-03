@@ -9,6 +9,11 @@ const designPxWidth = 750;
 const designRpxWidth = 750;
 const designRemRatio = 10; // 750/10
 
+/**
+ * 获取图片名称，如果不是图片文件则返回null
+ * 图片指的是jpg,png,gif
+ * @param {string} p 文件绝对路径
+ */
 const getImageName = function(p) {
     let fileInfo = path.parse(p);
 
@@ -34,14 +39,33 @@ const getImageName = function(p) {
     }
 };
 
+/**
+ * 生成css样式的width,height字符串
+ * @param {string} w
+ * @param {string} h
+ */
 const genStrWidthHeight = function(w, h) {
     return `{width: ${w}; height: ${h}}`;
 };
 
+/**
+ * 生成相对应的rpx宽高
+ * @param {int} w 宽度px
+ * @param {int} h 高度px
+ */
 const getRpxSize = function(w, h) {
-    return genStrWidthHeight(`${w}rpx`, `${h}rpx`);
+    const scale = 750 / designPxWidth; // 小程序上默认宽度为750rpx, 所有设计图宽度要根据750进行缩放
+    let newW = (w * scale).toFixed(2);
+    let newH = (h * scale).toFixed(2);
+
+    return genStrWidthHeight(`${newW}rpx`, `${newH}rpx`);
 };
 
+/**
+ * 生成相对应的rem宽高
+ * @param {int} w 宽度px
+ * @param {int} h 高度px
+ */
 const getRemSize = function(w, h) {
     let newW = (w / designRemRatio).toFixed(2) + 'rem';
     let newH = (h / designRemRatio).toFixed(2) + 'rem';
@@ -49,6 +73,11 @@ const getRemSize = function(w, h) {
     return genStrWidthHeight(`${newW}`, `${newH}`);
 };
 
+/**
+ * 生成相对应的百分比宽高
+ * @param {int} w 宽度px
+ * @param {int} h 高度px
+ */
 const getPercentSize = function(w, h) {
     let wPercent = (w / designPxWidth) * 100;
     let newW = wPercent.toFixed(2);
@@ -57,6 +86,10 @@ const getPercentSize = function(w, h) {
     return genStrWidthHeight(`${newW}%`, `${newH}`);
 };
 
+/**
+ * 使用promise封装getPixels对象
+ * @param {string} filePath 文件绝对路径
+ */
 const getPixelsPromise = function(filePath) {
     return new Promise(res => {
         getPixels(filePath, function(err, pixels) {
@@ -65,7 +98,11 @@ const getPixelsPromise = function(filePath) {
     });
 };
 
-const listAllImage = async function(root, id, files = []) {
+/**
+ * 列出文件列表中每个图片文件的基础属性(名称，宽，高，路径...)
+ * @param {string} files 文件列表
+ */
+const listImageBasicInfo = async function(files = []) {
     let listCss = [];
     for (let i = 0; i < files.length; i++) {
         let f = files[i];
@@ -87,15 +124,20 @@ const listAllImage = async function(root, id, files = []) {
                 path: f,
             });
         } catch (ex) {
-            console.log(f);
+            console.log(`get file error: ${{ f }}`);
             console.log(ex);
         }
     }
 
-    console.log('come to end');
     return listCss;
 };
 
+/**
+ * 生成css文件，宽度单位为百分比
+ * @param {array} list 图片文件基础信息列表
+ * @param {string} id 生成文件批次号
+ * @param {string} root 生成文件的目录
+ */
 const makeCssFilePercent = function(list, id, root) {
     let filePath = path.join(root, 'app-percent-' + id + '.css');
 
@@ -109,6 +151,12 @@ const makeCssFilePercent = function(list, id, root) {
     console.log(`generate file complete: ${filePath}`);
 };
 
+/**
+ * 生成css文件，宽度单位为rem
+ * @param {array} list 图片文件基础信息列表
+ * @param {string} id 生成文件批次号
+ * @param {string} root 生成文件的目录
+ */
 const makeCssFileRem = function(list, id, root) {
     let filePath = path.join(root, 'app-rem-' + id + '.css');
 
@@ -122,6 +170,12 @@ const makeCssFileRem = function(list, id, root) {
     console.log(`generate file complete: ${filePath}`);
 };
 
+/**
+ * 生成css文件，宽度单位为rpx
+ * @param {array} list 图片文件基础信息列表
+ * @param {string} id 生成文件批次号
+ * @param {string} root 生成文件的目录
+ */
 const makeCssFileRpx = function(list, id, root) {
     let filePath = path.join(root, 'app-rpx-' + id + '.css');
 
@@ -135,6 +189,12 @@ const makeCssFileRpx = function(list, id, root) {
     console.log(`generate file complete: ${filePath}`);
 };
 
+/**
+ * 生成html文件，其中包含所有图片的<img>标签
+ * @param {array} list 图片文件基础信息列表
+ * @param {string} id 生成文件批次号
+ * @param {string} root 生成文件的目录
+ */
 const makeHtml = function(list, id, root) {
     let filePath = path.join(root, 'index-' + id + '.html');
 
@@ -148,15 +208,23 @@ const makeHtml = function(list, id, root) {
     console.log(`generate file complete: ${filePath}`);
 };
 
-const makeCss = async function(path) {
-    let files = getAllFiles(path);
+/**
+ * 生成所有图片的css宽高
+ * @param {string} p 图片所在目录，绝对路径
+ */
+const makeCss = async function(p) {
+    let files = getAllFiles(p);
     let fileId = Date.now();
-    let list = await listAllImage(path, fileId, files);
+    let list = await listImageBasicInfo(p, fileId, files);
 
-    makeCssFilePercent(list, fileId, path);
-    makeCssFileRem(list, fileId, path);
-    makeCssFileRpx(list, fileId, path);
-    makeHtml(list, fileId, path);
+    let folderPath = path.join(p, '' + fileId);
+
+    fs.mkdirSync(folderPath);
+
+    makeCssFilePercent(list, fileId, folderPath);
+    makeCssFileRem(list, fileId, folderPath);
+    makeCssFileRpx(list, fileId, folderPath);
+    makeHtml(list, fileId, folderPath);
 };
 
 makeCss(testPath);
