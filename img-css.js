@@ -3,7 +3,7 @@ const fs = require('fs');
 const { getAllFiles } = require('./util/tool.js');
 const getPixels = require('get-pixels');
 
-const testPath = 'D:\\dev\\harbin-miniapp\\code\\trunk\\harbin-miniapp\\img';
+const testPath = 'D:\\herdsric\\中原银行\\素材';
 
 const designPxWidth = 750;
 const designRpxWidth = 750;
@@ -35,6 +35,7 @@ const getImageName = function(p) {
 
         return name;
     } else {
+        console.log(`${p} is not a image`);
         return null;
     }
 };
@@ -106,7 +107,7 @@ const listImageBasicInfo = async function(files = []) {
     let listCss = [];
     for (let i = 0; i < files.length; i++) {
         let f = files[i];
-        // console.log(`file: ${f}`);
+        console.log(`file: ${f}`);
         let name = getImageName(f);
 
         if (!name) {
@@ -215,7 +216,8 @@ const makeHtml = function(list, id, root) {
 const makeCss = async function(p) {
     let files = getAllFiles(p);
     let fileId = Date.now();
-    let list = await listImageBasicInfo(p, fileId, files);
+
+    let list = await listImageBasicInfo(files);
 
     let folderPath = path.join(p, '' + fileId);
 

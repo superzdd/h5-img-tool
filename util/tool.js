@@ -9,6 +9,7 @@ const path = require('path');
 function getAllFiles(filePath, arrFile = []) {
     let stat = fs.statSync(filePath);
     if (stat.isDirectory()) {
+        console.log(`scan directory ${filePath}`);
         let arr = fs.readdirSync(filePath);
 
         arr.forEach(f => {
@@ -16,6 +17,7 @@ function getAllFiles(filePath, arrFile = []) {
             getAllFiles(newFilePath, arrFile);
         });
     } else {
+        console.log(`scan file ${filePath}`);
         arrFile.push(filePath);
     }
 
