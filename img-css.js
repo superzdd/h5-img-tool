@@ -3,11 +3,13 @@ const fs = require('fs');
 const { getAllFiles } = require('./util/tool.js');
 const getPixels = require('get-pixels');
 
-const testPath = 'D:\\herdsric\\中原银行\\素材';
+// D:\\herdsric\\中原银行\\素材v2
+const testPath =
+    'D:\\dev\\hennessy-XXO\\code\\trunk\\hennessy-h5-new\\public\\imgs';
 
 const designPxWidth = 750;
 const designRpxWidth = 750;
-const designRemRatio = 10; // 750/10
+const designRemRatio = 100; // 750/100
 
 /**
  * 获取图片名称，如果不是图片文件则返回null
@@ -68,6 +70,8 @@ const getRpxSize = function(w, h) {
  * @param {int} h 高度px
  */
 const getRemSize = function(w, h) {
+    // 假设页面的宽度永远是7.5rem
+
     let newW = (w / designRemRatio).toFixed(2) + 'rem';
     let newH = (h / designRemRatio).toFixed(2) + 'rem';
 
@@ -84,7 +88,7 @@ const getPercentSize = function(w, h) {
     let newW = wPercent.toFixed(2);
     let newH = `calc( ${(h / w).toFixed(2)} * ${newW}vw)`;
 
-    return genStrWidthHeight(`${newW}%`, `${newH}`);
+    return genStrWidthHeight(`${newW}vw`, `${newH}`);
 };
 
 /**
@@ -202,7 +206,9 @@ const makeHtml = function(list, id, root) {
     fs.writeFileSync(filePath, '');
 
     list.forEach(f => {
-        let str = `<img src=\'${f.path}\' class=\'${f.name}\'>\r\n`;
+        let str = `<img src=\'${f.path.replace(/\\/g, '/')}\' class=\'${
+            f.name
+        }\'>\r\n`;
         fs.appendFileSync(filePath, str);
     });
 
