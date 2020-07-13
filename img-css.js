@@ -5,6 +5,8 @@ const getPixels = require('get-pixels');
 
 const testPath =
     '/Users/zhangchenhai/dev/hennessy-midautumn-h5-2020/code/front/trunk/hennessy-midautumn-h5-2020/public/imgs/';
+// const testPath =
+// 'D:\\dev\\hennessy-XXO\\code\\trunk\\hennessy-h5-new\\public\\imgs';
 
 const designPxWidth = 750;
 const designRpxWidth = 750;
@@ -164,11 +166,11 @@ const makeCss = async function (path) {
     let fileId = Date.now();
     let list = await listAllImage(path, fileId, files);
 
-    // makeCssFilePercent(list, fileId, path);
+    makeCssFilePercent(list, fileId, path);
     makeCssFileRem(list, fileId, path);
-    // makeCssFileRpx(list, fileId, path);
+    makeCssFileRpx(list, fileId, path);
     makeHtml(list, fileId, path);
-    // makeCDN(list, fileId, path);
+    makeCDN(list, fileId, path);
 };
 
 makeCss(testPath);
