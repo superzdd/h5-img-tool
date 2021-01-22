@@ -3,8 +3,9 @@ const fs = require('fs');
 const { getAllFiles } = require('./util/tool.js');
 const getPixels = require('get-pixels');
 
-const testPath =
-    '/Users/zhangchenhai/dev/hennessy-midautumn-h5-2020/code/front/trunk/hennessy-midautumn-h5-2020/public/imgs/';
+const testPath = '/Users/zhangchenhai/aaa/bbb/img';
+
+// /Users/zhangchenhai/herdsric/dior-2020-coupon/img
 // const testPath =
 // 'D:\\dev\\hennessy-XXO\\code\\trunk\\hennessy-h5-new\\public\\imgs';
 
@@ -51,10 +52,10 @@ const getRemSize = function (w, h) {
 
 const getPercentSize = function (w, h) {
     let wPercent = (w / designPxWidth) * 100;
-    let newW = wPercent.toFixed(2);
-    let newH = `calc( ${(h / w).toFixed(2)} * ${newW}vw)`;
+    let newW = Math.floor(wPercent * 100) / 100;
+    let newH = `calc( ${Math.floor((h / w) * 100) / 100} * ${newW}vw)`;
 
-    return genStrWidthHeight(`${newW}%`, `${newH}`);
+    return genStrWidthHeight(`${newW}vw`, `${newH}`);
 };
 
 const getPixelsPromise = function (filePath) {
@@ -154,7 +155,7 @@ const makeCDN = function (list, id, root) {
     fs.writeFileSync(filePath, '');
 
     list.forEach((f) => {
-        let str = `\'https://hbcdn.herdsric.com/hugoboss-mp-father-2020/img/${f.name}.png\',\r\n`;
+        let str = `\'https://mhdportfolio.hennessy.cn/cny2021/imgs/${f.path}\',\r\n`;
         fs.appendFileSync(filePath, str);
     });
 
@@ -167,8 +168,8 @@ const makeCss = async function (path) {
     let list = await listAllImage(path, fileId, files);
 
     makeCssFilePercent(list, fileId, path);
-    makeCssFileRem(list, fileId, path);
-    makeCssFileRpx(list, fileId, path);
+    // makeCssFileRem(list, fileId, path);
+    // makeCssFileRpx(list, fileId, path);
     makeHtml(list, fileId, path);
     makeCDN(list, fileId, path);
 };

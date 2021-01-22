@@ -6,7 +6,7 @@ const fs = require('fs');
 const { getAllFiles } = require('./util/tool.js');
 
 const testPath =
-    '/Users/zhangchenhai/herdsric/hennessy-midautumn-h5-2020/素材/20200708/3-活动界面/';
+    '/Users/zhangchenhai/dev/hennessy-midautumn-h5-2020/code/front/trunk/hennessy-midautumn-h5-2020/public/imgs/hennessy/items/';
 
 const getImageName = function (p) {
     let fileInfo = path.parse(p);
