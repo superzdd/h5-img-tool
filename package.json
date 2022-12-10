@@ -9,7 +9,7 @@
   "author": "3c",
   "license": "ISC",
   "devDependencies": {
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "get-pixels": "^3.3.2"
   },
   "dependencies": {
